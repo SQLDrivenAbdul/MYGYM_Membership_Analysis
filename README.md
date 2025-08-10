@@ -34,3 +34,6 @@ ORDER BY revenue
 
 A deep dive into which segment of the customers/members generates the most income reveals that the Premium membership type with 812 (40% customers) generates the most revenue with a value of 34480.86 USD, followed by Standard type with 593 (29.7% customers) generated a value of 15450.11 USD while the elite and basic are at the rare with 12155.39 and 6788.55 USD respectively.
 
+
+
+
