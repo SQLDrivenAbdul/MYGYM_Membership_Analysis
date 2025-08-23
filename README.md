@@ -30,31 +30,23 @@ The data was gotten from Onyx Analytics monthly challenge for August. It has 25 
 WITH
     Most_valuable
     AS
-    (
-        SELECT
-            ISNULL(membership_type, 'Total') AS membership_type,
-            COUNT(member_id)  AS  n_members,
-            SUM(final_price)  AS revenue
-        FROM
-            MyGym_Fitness
-        GROUP BY
-           membership_type
+    (SELECT
+        ISNULL(membership_type, 'Total') AS membership_type,
+        COUNT(member_id)  AS  n_members,
+        SUM(final_price)  AS revenue
+     FROM
+        MyGym_Fitness
+     GROUP BY
+        membership_type
     )
 SELECT
     membership_type,
     n_members,
-    CAST(revenue AS FLOAT) /
-        (
-            SELECT
-        SUM(final_price)
-    FROM
-        MyGym_Fitness
-        ) * 100 AS percentage_of_total_rev
+    CAST(revenue AS FLOAT) / (SELECT SUM(final_price) FROM MyGym_Fitness) * 100 AS percentage_of_total_rev
 FROM
     Most_valuable
 ORDER BY
     percentage_of_total_rev DESC
-
 ```
 ### Query result
 ![Gym Database ERD](gym1.PNG)
