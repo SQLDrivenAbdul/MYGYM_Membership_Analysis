@@ -57,9 +57,10 @@ ORDER BY
 
 ```
 ### Query result
-(gym1.PNG)
+![Gym Database ERD](gym1.PNG)
 
-A deep dive into which segment of the customers/members generates the most income reveals that the Premium membership type with 812 (40% customers) generates the most revenue with a value of 34480.86 USD, followed by Standard type with 593 (29.7% customers) generated a value of 15450.11 USD while the elite and basic are at the rare with 12155.39 and 6788.55 USD respectively.
+
+The Premium members(40% of the members population) generates the most revenue with 50% of the total revenue,followed by the Standard with 22% of total_revenue while the Elite and Basic are at the rare with approximately 18 and 10 percent respectively.
 
 
 
