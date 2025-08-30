@@ -222,9 +222,12 @@ FROM Pricing
 GROUP BY subscription_model,discount_type
 ORDER BY subscription_model
 ```
+### Query Output
+
+![Gym Profit and Churn](./pricing.PNG)
 
 
-
+The "None" discount type of the Monthly subscription model was given no discount. Interestingly, most members who did receive discounts still exhibited churn rates just as high as those who received no discount at all. 
 
 
 
