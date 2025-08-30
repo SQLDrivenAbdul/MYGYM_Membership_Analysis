@@ -71,8 +71,8 @@ I created a view to select columns needed for the analysis.
 ### Context
 Understanding customer churn is critical for any business. Although losing customers is inevitable, identifying and analyzing the root causes enables organizations to make informed, strategic decisions that could improve retention and long-term growth. For a fitness company like MyGym,where consistency of customers is key to achieving their goal of a smart and healthy body,I created a benchmark,considering members who has  been out of the gym for more than 30 days a churned customer.
 
+![Gym Profit and Churn](./churn_rate.PNG)
 
-![Gym Profit and Churn](gym_profit%20and%20churn.PNG)
 
 ### Profitability and Churn By Membership type
 
