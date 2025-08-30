@@ -64,9 +64,7 @@ FROM
 
 I created a view to select columns needed for the analysis.
 
-
 &nbsp;
-
 
 ### Context
 <p align="justify">
@@ -96,7 +94,7 @@ FROM cte
 
 The query shows that 49% of the customers had churn meaning thier last day of visit to the gym is over a month.
 
-
+&nbsp;
 
 ### Profitability and Churn By Membership type
 
@@ -135,10 +133,9 @@ FROM aggregation
 
 This query reveals that the Premium membership_type generates 50% of the gym revenue with 812 members out of which about 50% of them has also churned.
 
+&nbsp;
 
-
-
-
+The query below further reveals the statuses(active,inactive and churned) across all membership_type.
 ```sql
 DECLARE @Last_day DATE;
 SET @Last_day = (SELECT MAX(last_visit_date)FROM Gymnalytics);
@@ -197,6 +194,35 @@ JOIN
 ORDER BY 
     membership_type,member_status
 ```
+![Gym Profit and Churn](./gym_classify.PNG)
+
+
+### A deep dive into the pricing model to see if it impacts churn
+
+```sql
+
+WITH Pricing 
+AS(SELECT 
+      subscription_model,
+      member_id,
+      discount_type,
+      final_price,
+      subscription_price - final_price  AS discount_value,
+      DATEDIFF(DAY,last_visit_date,(SELECT MAX(last_visit_date)FROM Gymnalytics)) AS date_count
+   FROM 
+      Gymnalytics
+)
+
+ SELECT 
+    subscription_model,
+    discount_type,
+    SUM(discount_value) AS discount,
+    ROUND(CAST(COUNT(CASE WHEN date_count > 30 THEN 1 END) AS FLOAT)/  COUNT(member_id)*100,2) AS perc_churned
+FROM Pricing
+GROUP BY subscription_model,discount_type
+ORDER BY subscription_model
+```
+
 
 
 
