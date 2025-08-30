@@ -24,36 +24,75 @@ The data was gotten from Onyx Analytics monthly challenge for August. It has 25 
 - Optimize staffing and facility allocation across locations
 - Explore trends in retention, usage, and upgrade behavior
 
-## Analysis
--- Profitability
-```sql
-WITH
-    Most_valuable
-    AS
-    (SELECT
-        ISNULL(membership_type, 'Total') AS membership_type,
-        COUNT(member_id)  AS  n_members,
-        SUM(final_price)  AS revenue
-     FROM
-        MyGym_Fitness
-     GROUP BY
-        membership_type
-    )
-SELECT
+I created a view to select coolumns needed for the analysis.
+
+``` sql
+CREATE VIEW Gymnalytics 
+AS (SELECT 
+    member_id,
     membership_type,
-    n_members,
-    CAST(revenue AS FLOAT) / (SELECT SUM(final_price) FROM MyGym_Fitness) * 100 AS percentage_of_total_rev
-FROM
-    Most_valuable
-ORDER BY
-    percentage_of_total_rev DESC
+    age,
+    visit_per_week,
+    days_per_week,
+    attend_group_lesson,
+    avg_time_check_in,
+    avg_time_check_out,
+    uses_sauna,
+    duration_in_gym_minutes,
+    has_drink_subscription,
+    personal_training,
+    self_identified_gender,
+    subscription_price,
+    subscription_model,
+    adjusted_price,
+    discount_type,
+    discount_rate,
+    final_price,
+    access_hours,
+    home_gym_location,
+    latitude,
+    longitude,
+    join_date,
+    last_visit_date,
+    personal_training_hours,
+    multi_location_access
+FROM 
+    MyGym_Fitness
+)
 ```
-### Query result
-![Gym Database ERD](gym1.PNG)
+### Profitability and Churn By Membership type
 
+``` sql
+WITH cte 
+AS(SELECT 
+    membership_type,
+    member_id,
+    join_date,
+    last_visit_date,
+    final_price,
+    DATEDIFF(DAY,last_visit_date,(SELECT MAX(last_visit_date) FROM Gymnalytics)) AS date_count
+FROM Gymnalytics
+)
+,
+aggregation 
+AS(SELECT 
+    membership_type,
+    COUNT(CASE WHEN date_count > 30 THEN 1 END) AS n_churned_members,
+    COUNT(member_id) AS n_existing_members,
+    SUM(final_price) AS revenue_per_type
+FROM cte
+GROUP BY membership_type
+)
 
-The Premium members(40% of the members population) generates the most revenue with 50% of the total revenue,followed by the Standard with 22% of total_revenue while the Elite and Basic are at the rare with approximately 18 and 10 percent respectively.
+SELECT 
+    membership_type,
+    n_churned_members,
+    n_existing_members,
+    revenue_per_type /(SELECT SUM(final_price) FROM Gymnalytics) * 100 AS percent_of_total_revenue 
+FROM aggregation
+```
 
+Query Output
 
 
 
