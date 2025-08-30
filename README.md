@@ -24,7 +24,7 @@ The data was gotten from Onyx Analytics monthly challenge for August. It has 25 
 - Optimize staffing and facility allocation across locations
 - Explore trends in retention, usage, and upgrade behavior
 
-I created a view to select coolumns needed for the analysis.
+
 
 ``` sql
 CREATE VIEW Gymnalytics 
@@ -60,6 +60,10 @@ FROM
     MyGym_Fitness
 )
 ```
+
+I created a view to select coolumns needed for the analysis.
+
+
 ### Profitability and Churn By Membership type
 
 ``` sql
@@ -92,7 +96,8 @@ SELECT
 FROM aggregation
 ```
 
-Query Output
+### Query Output
+![Gym Profit and Churn](gym_profit%20and%20churn.PNG)
 
 
 
