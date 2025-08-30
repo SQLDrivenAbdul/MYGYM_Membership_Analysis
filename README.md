@@ -7,10 +7,8 @@ This project analyses the data of MYGYM, a fast-growing fitness center chain wit
 </p>
 
 
-
 ## Data Sources
 The data was gotten from Onyx Analytics monthly challenge for August. It has 25 fields of both facts and dimensional values and 1998 records.
-
 
 
 ## Tools
@@ -24,6 +22,7 @@ The data was gotten from Onyx Analytics monthly challenge for August. It has 25 
 - Optimize staffing and facility allocation across locations
 - Explore trends in retention, usage, and upgrade behavior
 
+&nbsp;
 
 
 ``` sql
@@ -66,12 +65,37 @@ FROM
 I created a view to select columns needed for the analysis.
 
 
+&nbsp;
 
 
 ### Context
+<p align="justify">
 Understanding customer churn is critical for any business. Although losing customers is inevitable, identifying and analyzing the root causes enables organizations to make informed, strategic decisions that could improve retention and long-term growth. For a fitness company like MyGym,where consistency of customers is key to achieving their goal of a smart and healthy body,I created a benchmark,considering members who has  been out of the gym for more than 30 days a churned customer.
+</p>
 
-![Gym Profit and Churn](churn%rate.PNG)
+```sql
+
+WITH cte 
+AS(SELECT 
+    membership_type,
+    member_id,
+    join_date,
+    last_visit_date,
+    final_price,
+    DATEDIFF(DAY,last_visit_date,(SELECT MAX(last_visit_date) FROM Gymnalytics)) AS date_count
+FROM Gymnalytics
+)
+SELECT 
+    CAST(COUNT(CASE WHEN date_count > 30 THEN 1 END) AS FLOAT)/COUNT(member_id)* 100 AS Churn_rate
+ 
+FROM cte
+```
+
+### Query Output
+![Gym Profit and Churn](./churn%20rate.PNG)
+
+The query shows that 49% of the customers had churn meaning thier last day of visit to the gym is over a month.
+
 
 
 ### Profitability and Churn By Membership type
@@ -108,6 +132,74 @@ FROM aggregation
 
 ### Query Output
 ![Gym Profit and Churn](gym_profit%20and%20churn.PNG)
+
+This query reveals that the Premium membership_type generates 50% of the gym revenue with 812 members out of which about 50% of them has also churned.
+
+
+
+
+
+```sql
+DECLARE @Last_day DATE;
+SET @Last_day = (SELECT MAX(last_visit_date)FROM Gymnalytics);
+
+WITH Segmentation
+AS(SELECT
+     member_id,
+     membership_type,
+     join_date,
+     last_visit_date,
+     DATEDIFF(DAY,last_visit_date,@Last_day) AS date_count  
+FROM
+    Gymnalytics
+)
+,
+    Segmentation2 AS
+(SELECT 
+    membership_type,
+    member_id,
+    CASE WHEN date_count <= 10 THEN 'active'
+         WHEN date_count > 10 AND date_count <= 30 THEN 'inactive'
+         ELSE 'churned'
+    END AS member_status
+FROM 
+    Segmentation
+)
+, 
+     Segmentation3 AS
+(SELECT 
+    membership_type,
+    member_status,
+    COUNT(member_id) AS n_members
+FROM 
+    Segmentation2
+GROUP BY 
+    membership_type,member_status
+)
+,
+     Type_total     AS
+(SELECT 
+    membership_type,
+    COUNT(member_id) AS members
+FROM 
+    Gymnalytics
+GROUP BY 
+    membership_type)
+
+SELECT 
+    l.membership_type,
+    member_status,
+    ROUND(CAST(l.n_members AS FLOAT) /r.members * 100,2) AS perc
+FROM 
+    Segmentation3 AS l
+JOIN 
+    Type_total    AS r  ON l.membership_type = r.membership_type
+ORDER BY 
+    membership_type,member_status
+```
+
+
+
 
 
 
