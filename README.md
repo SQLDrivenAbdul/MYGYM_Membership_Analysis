@@ -63,6 +63,7 @@ FROM
 
 I created a view to select coolumns needed for the analysis.
 
+&nbsp;
 
 ### Profitability and Churn By Membership type
 
