@@ -226,8 +226,25 @@ ORDER BY subscription_model
 
 ![Gym Profit and Churn](./pricing.PNG)
 
+<p align="justify">
+The "None" discount type of the Monthly subscription model was given no discount. Interestingly, most members who did receive discounts still exhibited churn rates just as high as those who received no discount at all. This indicates that offering discounts does not necessarily reduce churn, suggesting that other factors may have a stronger impact on retention.
+</p>
 
-The "None" discount type of the Monthly subscription model was given no discount. Interestingly, most members who did receive discounts still exhibited churn rates just as high as those who received no discount at all. 
+
+### The  Big Question?
+
+If discounts has no impact on retention,then is it worth it?
+
+```sql
+
+SELECT 
+    SUM(subscription_price - final_price),
+    CAST(SUM(subscription_price - final_price) AS FLOAT)/SUM(final_price)*100
+FROM
+   Gymnalytics
+```
+
+MyGym gave a total of 11325.09 USD in discount to its members which is 16% of revenue generated. It has been revealed that discount doesnt influence retention,therefore given a such huge value as discount is not worth it and Mygym should cut down how much they give out in discount if they really have to do while exploring other strategies to ensure retention of customers.
 
 
 
